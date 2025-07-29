@@ -1,0 +1,29 @@
+﻿id,start,end,strand,substrate,cancer,reference,hg38_start,hg38_end
+1,286,296,,miR-184,prostate,Wang_et_al_2018,89712141,89712151
+1,303,309,,miR-184,prostate,Wang_et_al_2018,89712158,89712164
+2,5688,5692,,miR-4739,prostate,Wang_et_al_2020,89717543,89717547
+2,5695,5696,,miR-4739,prostate,Wang_et_al_2020,89717550,89717551
+2,5698,5699,,miR-4739,prostate,Wang_et_al_2020,89717553,89717554
+2,5703,5704,,miR-4739,prostate,Wang_et_al_2020,89717558,89717559
+2,5706,5707,,miR-4739,prostate,Wang_et_al_2020,89717561,89717567
+3,5805,5811,,miR-491-5p,leukemia;hepatocellular carcinoma,Xiao_et_al_2020;Fa_et_al_2021,89717660,89717666
+4,5696,5700,,miR-214-3p,leukemia,Xiao_et_al_2020,89717551,89717555
+4,5702,5702,,miR-214-3p,leukemia,Xiao_et_al_2020,89717557,89717557
+4,5708,5708,,miR-214-3p,leukemia,Xiao_et_al_2020,89717563,89717563
+4,5710,5716,,miR-214-3p,leukemia,Xiao_et_al_2020,89717565,89717571
+5,4708,4709,,miR-361-3p,colorectal,Gao_et_al_2022,89716563,89716564
+5,4711,4711,,miR-361-3p,colorectal,Gao_et_al_2022,89716566,89716566
+5,4716,4717,,miR-361-3p,colorectal,Gao_et_al_2022,89716571,89716572
+5,4720,4725,,miR-361-3p,colorectal,Gao_et_al_2022,89716575,89716580
+6,4970,5049,,hnRNP-K,colon,Kawasaki_et_al_2016,89716825,89716904
+6,5489,6310,,hnRNP-K,colon,Kawasaki_et_al_2016,89717344,89718165
+7,5981,5987,,miR-377-3p,endometrial,Peng_et_al_2022,89717836,89717842
+8,5816,5824,,miR-187-3p,prostate,Wu_et_al_2023,89717671,89717679
+9,4835,4842,,miR-324-5p,colon adenocarcinoma,Huang_et_al_2022,89716690,89716697
+c16riboseqorf141,,,+,,,Huang_et_al_2022,89716582,89716637
+c16riboseqorf141,,,+,,,Mudge_et_al_2022,89717344,89717386
+c16riboseqorf142,,,+,,,Mudge_et_al_2022,89716634,89716891
+c16riboseqorf143,,,+,,,Mudge_et_al_2022,89717451,89718032
+c16norep142,,,+,,,Mudge_et_al_2022,89716888,89716904
+c16norep142,,,+,,,Mudge_et_al_2022,89717344,89717386
+TR,,,,hnRNP-K,,This study,89717829,89718127

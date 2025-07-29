@@ -1,0 +1,154 @@
+mammal_TR.txt
+
+Shu-Ting Cho <shutingcho@pitt.edu>
+
+# Detect tandem repeat in microproteins
+
+<date>2023/04/19</date>
+
+
+library(DECIPHER)
+
+# Read microprotein sequences
+miprots <- scan('miprot.seq', what="", sep="\n")
+miprots <- AAStringSet(miprots)
+
+# Find tandem repeats
+res <- DetectRepeats(miprots)
+res
+  Index Begin End         Left        Right    Score
+1  1523   121 192 121, 127.... 126, 137.... 12.76431
+res[,'Left']
+[[1]]
+[1] 121 127 138 149 160 171 182
+
+res[,'Right']
+[[1]]
+[1] 126 137 148 159 170 181 192
+
+
+##### get orthologs in other species #####
+# Full length orf
+ORF_26 <- readDNAStringSet('ORF_26.fasta')
+ORF_26_MSA <- AlignSeqs(ORF_26, verbose=FALSE)
+writeXStringSet(ORF_26_MSA, 'ORF_26_MSA.fasta')
+
+# calculate identity
+ref <- ORF_26_MSA[[1]]
+for (seq_i in seq(26)) {
+    query <- ORF_26_MSA[[seq_i]]
+    total <- 0
+    match <- 0
+    for (i in seq(980)) {
+        if (as.character(ref[i])!= '-') {
+            total = total + 1
+            if (ref[i]==query[i]) {
+                match = match + 1
+            }    
+        } 
+    }
+    cat(names(ORF_26_MSA)[seq_i], round(match/total, digit=2)*100,'\n')
+}
+# 01_homo_sapies 100 
+# 02_pa_troglodytes 96 
+# 03_pa_paiscus 85 
+# 04_gorilla_gorilla 96 
+# 05_pogo_abelii 63 
+# 06_cercocebus_atys 59 
+# 07_papio_aubis 59 
+# 08_macaca_emestria 60 
+# 09_rhiopithecus_bieti 58 
+# 10_rhiopithecus_roxellaa 58 
+# 11_aotus_acymaae 55 
+# 12_callithrix_jacchus 53 
+# 13_saimiri_boliviesis_boliviesis 0 
+# 14_carlito_syrichta 37 
+# 15_otolemur_garettii 40 
+# 16_propithecus_coquereli 47 
+# 17_prolemur_simus 48 
+# 18_jaculus_jaculus 4 
+# 19_dipodomys_ordii 35 
+# 20_urocitellus_parryii 39 
+# 21_ictidomys_tridecemlieatus 39 
+# 22_octodo_degus 3 
+# 23_heterocephalus_glaber_female 38 
+# 24_chichilla_laigera 3 
+# 26_myotis_lucifugus 32 
+# 25_dasypus_ovemcictus 21 
+
+
+
+
+##### Collect TR units in different species #####
+# manually find TR units at the orthologous region in other species
+# save found TR unit sequences as fasta
+TRunits_all <- readDNAStringSet('TRunits_all.fasta')
+TRunits_all_MSA <- AlignSeqs(TRunits_all, verbose=FALSE)
+writeXStringSet(TRunits_all_MSA, 'TRunits_all_MSA.fasta')
+
+# remove 3 partial units
+TRunits_all_MSA <- readDNAStringSet('TRunits_all_MSA.2.fasta')
+
+d <- DistanceMatrix(TRunits_all_MSA, includeTerminalGaps = TRUE, verbose=FALSE)
+MLtree <- TreeLine(myXStringSet=TRunits_all_MSA, myDistMatrix=d, method="ML", cutoff=0.05, showPlot=TRUE)
+WriteDendrogram(MLtree, file = 'TRunits_all.tree')
+# visualize and color in FigTree
+
+# rotate tree and reorder MSA
+TRunits_all_MSA <- readDNAStringSet('TRunits_all_MSA.3.fasta')
+
+# identity matrix
+MSA_h <- TRunits_all_MSA
+unit_number <- length(MSA_h)
+MSA_len <- width(MSA_h)[1]
+
+ident_mt = matrix(, nrow = unit_number, ncol = unit_number)
+# compute pairwise identity
+for (i in seq(unit_number)) {
+    ref <- MSA_h[[i]]
+    for (j in seq(unit_number)) {
+        query <- MSA_h[[j]]
+        match <- 0
+        total <- 0
+        for (pos in seq(MSA_len)) {
+            if (as.character(ref[pos])!= '-') {
+                total = total + 1
+                if (ref[pos]==query[pos]) {
+                    match = match + 1
+                }
+            }
+        }
+        ident_h <- round(match/total, digit=2)*100
+        cat(names(MSA_h)[i], ident_h,'\n')
+        ident_mt[i,j] <- ident_h
+    }
+}
+
+# get average
+ident_ave_mt <- ident_mt
+for (i in seq(unit_number)) {
+    for (j in seq(i-1)) {
+        ident_ave_mt[i,j] <- (ident_ave_mt[i,j]+ident_ave_mt[j,i])/2
+        ident_ave_mt[j,i] <- ident_ave_mt[i,j]
+    }
+}
+
+ident_ave_mt[lower.tri(ident_ave_mt, diag=TRUE)] <- NA
+
+# Create a matrix of values
+values <- ident_ave_mt
+df <- data.frame(
+  row = rep(1:nrow(values), ncol(values)),
+  col = rep(1:ncol(values), each = nrow(values)),
+  value = as.vector(values)
+)
+
+# Create the heatmap using ggplot2
+library(ggplot2)
+ggplot(df, aes(x = col, y = row, fill = value)) +
+  geom_tile() +
+  #geom_text(aes(label = value)) +
+  scale_fill_gradient(high = "#1b98e0", low = "white", na.value = "white")+
+  scale_y_reverse()+
+  theme_minimal()+
+  theme(legend.position="none", axis.ticks = element_blank(),axis.text = element_blank(), axis.title=element_blank())
