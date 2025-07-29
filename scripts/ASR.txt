@@ -1,0 +1,17 @@
+ASR.txt
+Lin Chou
+2024.3.1
+### aims: 
+(1) ancestral sequence reconstruction for five ape species
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#####1 ASR using Prequel #####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+mkdir -p prequel
+cd prequel
+# extract orthologous regions with orf143, excluding the TR region, from ensembl. (1-378nt).use the tree from ensembl, trim it to the five species
+# make tree model
+phyloFit -m orf143_1_378_apes_aln.fas --tree "((((pan_paniscus:0.00332,pan_troglodytes:0.00222)Anc1:0.00431,homo_sapiens:0.00660)Anc2:0.00185,gorilla_gorilla:0.00858)Anc3:0.00839,pongo_abelii:0.01718)Anc4:0.00000;"
+# run ASR
+prequel orf143_1_378_apes_aln.fas phyloFit.mod orf143_1_378_apes -n
